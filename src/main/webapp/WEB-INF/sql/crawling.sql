@@ -4,7 +4,7 @@ show databases;
 create database practice;
 
 use practice;
-use nonchrono;
+use @nonchrono;
 
 create table tb_game(
     gm_code varchar(100) not null primary key,

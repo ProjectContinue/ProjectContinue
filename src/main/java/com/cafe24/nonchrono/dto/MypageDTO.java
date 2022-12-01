@@ -9,6 +9,7 @@ import lombok.*;
 @ToString
 public class MypageDTO {
 
+
     private String mem_id;          // 회원ID
     private String mem_pw;          // 회원PW
     private String mem_nick;        // 닉네임
