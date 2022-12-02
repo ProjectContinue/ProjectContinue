@@ -44,6 +44,11 @@ drop table tb_mem;
 
 select * from tb_mem;
 
+SELECT mem_id
+FROM tb_mem
+WHERE mem_id = '1234';
+
+
 
 INSERT INTO tb_mem (mem_id, mem_pw, mem_nick, mem_name, mem_zip, mem_adr1, mem_adr2, mem_phone, mem_birth, mem_grade, upoint, apoint, mem_receive, good, buyer_bad)
 VALUES ('gjdjj888', 'kkeioh45@', '방이동도도민경', '김민경', '12345', '서울특별시 중구 세종대로', '67', '02-6466-4564', '19980224', 'VIP', 5000, 5000, 'N', 0, 0);

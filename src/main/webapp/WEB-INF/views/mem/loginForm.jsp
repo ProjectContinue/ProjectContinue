@@ -20,16 +20,16 @@
 
 <div class="container">
     <h3>로그인</h3>
-    <form name="Loginfrm" id="Loginfrm" action="loginForm.jsp" method="post"><!-- myscript.js -->
+    <form name="Loginfrm" id="Loginfrm" action="/mem/login" method="post"><!-- myscript.js -->
         <table class="table">
             <div class="checkout__input">
-                <input type="text">
+                <input type="text" id="mem_id" name="mem_id">
             </div>
             <div class="checkout__input">
                 <p>비밀번호</p>
-                <input type="text">
+                <input type="text" id="mem_pw" name="mem_pw">
             </div>
-            <button type="submit"  class="site-btn">로그인</button>
+            <input type="submit" class="site-btn" value="로그인">
             &nbsp;&nbsp;&nbsp;
             <button type="button" onclick="location.href='/mem/signup'" class="site-btn">회원 가입하기</button>
         </table>
