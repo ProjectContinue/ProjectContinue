@@ -1,4 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -8,12 +12,12 @@
     <meta name="keywords" content="Ogani, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="robots" content="noindex">
-    <title>Continue? | 마켓 & 모집</title>
 
     <!-- Favicons -->
     <link href="/images/favicon.png" rel="icon">
     <link href="/images/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <title>Continue? | 마켓 & 모집</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
@@ -27,7 +31,10 @@
     <link rel="stylesheet" href="/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/css/style.css" type="text/css">
-    <link href=”favicon.png” rel=”icon” type=”image/x-icon” />
+
+    <script src="/js/jquery-3.6.1.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
 </head>
 
 <body>
@@ -56,7 +63,7 @@
     <nav class="humberger__menu__nav mobile-menu">
         <ul>
             <li><a href="/">마켓 플레이스</a></li>
-            <li><a href="/recruit">모집 게시판</a></li>
+            <li><a href="/">모집 게시판</a></li>
             <li><a href="/" class="active">미니 게임</a></li>
             <li><a href="#">고객센터</a>
                 <ul class="header__menu__dropdown">
@@ -88,6 +95,7 @@
                 <div class="col-lg-6 col-md-6">
                     <div class="header__top__right">
                         <div class="header__top__right__social">
+                            <a href="/seller">판매자 모드</a>
                             <a href="/admin">관리자 모드</a>
                             <a href="/mem/login">로그인</a>
                             <a href="/mem/signup">회원가입</a>
@@ -126,7 +134,7 @@
             <div class="col-lg-3">
                 <div class="header__cart">
                     <ul>
-                        <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
+                        <li><a href="/mypage/wishlist"><i class="fa fa-heart"></i> <span>1</span></a></li>
                         <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
                     </ul>
                 </div>

@@ -8,12 +8,12 @@
     <meta name="keywords" content="Ogani, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="robots" content="noindex">
-    <title>Continue? | 마켓 & 모집</title>
 
     <!-- Favicons -->
     <link href="/images/favicon.png" rel="icon">
     <link href="/images/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <title>Continue? | 마켓 & 모집</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
@@ -87,6 +87,7 @@
                 <div class="col-lg-6 col-md-6">
                     <div class="header__top__right">
                         <div class="header__top__right__social">
+                            <a href="/seller">판매자 모드</a>
                             <a href="/admin">관리자 모드</a>
                             <a href="/mem/login">로그인</a>
                             <a href="/mem/signup">회원가입</a>
@@ -125,7 +126,7 @@
             <div class="col-lg-3">
                 <div class="header__cart">
                     <ul>
-                        <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
+                        <li><a href="mypage/wishlist"><i class="fa fa-heart"></i> <span>1</span></a></li>
                         <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
                     </ul>
                 </div>
@@ -139,7 +140,7 @@
 <!-- 헤더 끝 -->
 
 <!-- 카테고리 & 배너 시작 -->
-<section class="hero">
+<section class="hero hero-normal">
     <div class="container">
         <div class="row">
             <div class="col-lg-3">
