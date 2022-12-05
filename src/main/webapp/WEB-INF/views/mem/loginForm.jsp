@@ -19,19 +19,22 @@
 <!--본문시작 loginForm.jsp-->
 
 <div class="container">
-    <h3>로그인</h3>
-    <form name="Loginfrm" id="Loginfrm" action="/mem/login" method="post"><!-- myscript.js -->
+    <h4>로그인</h4>
+    <form name="Loginfrm" id="Loginfrm" action="/mem/login" method="post" onsubmit="return memberCheck()"><!-- myscript.js -->
         <table class="table">
-            <div class="checkout__input">
-                <input type="text" id="mem_id" name="mem_id">
+            <div class="col-lg-4 col-md-4">
+                <div class="checkout__input">
+                    <p>아이디</p>
+                    <input type="text" id="mem_id" name="mem_id">
+                </div>
+                <div class="checkout__input">
+                    <p>비밀번호</p>
+                    <input type="text" id="mem_pw" name="mem_pw">
+                </div>
+                <input type="submit" class="site-btn" value="로그인">
+                &nbsp;&nbsp;&nbsp;
+                <button type="button" onclick="location.href='/mem/signup'" class="site-btn">회원 가입하기</button>
             </div>
-            <div class="checkout__input">
-                <p>비밀번호</p>
-                <input type="text" id="mem_pw" name="mem_pw">
-            </div>
-            <input type="submit" class="site-btn" value="로그인">
-            &nbsp;&nbsp;&nbsp;
-            <button type="button" onclick="location.href='/mem/signup'" class="site-btn">회원 가입하기</button>
         </table>
     </form>
 </div>

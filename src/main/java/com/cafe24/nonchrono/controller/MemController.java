@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RequestMapping("/mem")
 @Controller
@@ -32,10 +33,13 @@ public class MemController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)//정보를 가지고 로그인폼
     public ModelAndView loginProc(@ModelAttribute MemDTO dto, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
         String id=dto.getMem_id();
+        //System.out.println(id);
         String pw=dto.getMem_pw();
+        //System.out.println(pw);
         ModelAndView mav = new ModelAndView();
-
-        if(id.equals(memDAO.idcheck()) && pw.equals(memDAO.pwcheck())) {//디비랑 비교(equals)
+        String grade = memDAO.login(id, pw);
+        //System.out.println(grade);
+        if(grade != null) {
             mav.setViewName("redirect:/");
             session.setAttribute("mem_id", id);//세션에 값 저장. "" 내용에 id를 저장
             session.setAttribute("mem_pw", pw);
@@ -46,6 +50,21 @@ public class MemController {
 
         return mav;
     }//loginProc() end
+
+    //회원가입 폼 -> db -> sql ->
+
+//    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+//    public ModelAndView memList(@ModelAttribute MemDTO dto) {
+//        ModelAndView mav =new ModelAndView();
+//        mav.addObject("insert", memDAO.meminsert(dto));
+//        mav.setViewName("/mem");
+//        return mav;
+//    }
+
+
+
+
+
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String memsignup() {
