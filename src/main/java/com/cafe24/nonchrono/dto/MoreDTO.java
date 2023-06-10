@@ -14,7 +14,7 @@ public class MoreDTO {
     private String rcrbrd_edate;
     private String rcrbrd_subject;
     private String gm_name;
-    private int count;
+    private int cnt;
     private int rcrbrd_max;
     private int com_count;
 

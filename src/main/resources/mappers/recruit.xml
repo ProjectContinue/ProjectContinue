@@ -4,30 +4,46 @@
 <mapper namespace="recruit">
     <!-- 목록 출력 -->
     <select id="list" resultType="com.cafe24.nonchrono.dto.RecruitDTO">
-        SELECT rcrbrd_num,
-               mem_id,
-               rcrbrd_subject,
-               rcrbrd_content,
-               rcrbrd_pw,
-               rcrbrd_views,
-               rcrbrd_date,
-               rcrbrd_edate,
-               rcrbrd_ip,
-               gm_code,
-               rcrbrd_status,
-               rcrbrd_adr,
-               rcrbrd_max,
-               (SELECT count(*) FROM tb_comment where rcrbrd_num = rb.rcrbrd_num) as com_count,
+        SELECT rb.rcrbrd_num,
+               rb.mem_id,
+               rb.rcrbrd_subject,
+               rb.rcrbrd_edate,
+               rb.rcrbrd_max,
+               gm.gm_name,
+               (SELECT count(*) FROM tb_comment where rcrbrd_num = rb.rcrbrd_num) as com_count, /* 댓글 수 */
                (SELECT count(mem_id)
                 FROM tb_recruitinfo
-                where rcrbrd_num = rb.rcrbrd_num)                                 as cnt
+                where rcrbrd_num = rb.rcrbrd_num)                                 as cnt /* 참여자 수 */
         FROM tb_rcrboard rb
-        WHERE rcrbrd_status = '진행중'
-          AND rcrbrd_edate >= now()
+        LEFT JOIN tb_game gm ON rb.gm_code = gm.gm_code
+        WHERE rcrbrd_status = '진행중' AND rcrbrd_edate >= now()
         ORDER BY ${order} DESC
         Limit 9
     </select>
 
+    <!-- 키워드가 있을시 목록 출력 -->
+    <select id="list2" parameterType="java.util.Map" resultType="com.cafe24.nonchrono.dto.RecruitDTO">
+        SELECT rb.rcrbrd_num,
+               rb.mem_id,
+               rb.rcrbrd_subject,
+               rb.rcrbrd_edate,
+               rb.rcrbrd_max,
+               gm.gm_name,
+               (SELECT count(*) FROM tb_comment where rcrbrd_num = rb.rcrbrd_num) as com_count, /* 댓글 수 */
+               (SELECT count(mem_id)
+                FROM tb_recruitinfo
+                where rcrbrd_num = rb.rcrbrd_num)                                 as cnt /* 참여자 수 */
+        FROM tb_rcrboard rb
+                 JOIN tb_game gm
+                      ON rb.gm_code = gm.gm_code
+        WHERE rcrbrd_status = '진행중'
+          AND rcrbrd_edate >= now()
+          AND gm.gm_name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY ${order} DESC
+        Limit 9
+    </select>
+
+    <!-- 정렬시 목록 출력 -->
     <select id="listAjax" resultType="com.cafe24.nonchrono.dto.MoreDTO">
         SELECT gm.gm_name,
                rb.rcrbrd_num,
@@ -40,10 +56,8 @@
                 FROM tb_recruitinfo
                 WHERE rcrbrd_num = rb.rcrbrd_num)                                 as cnt
         FROM tb_rcrboard rb
-                 join tb_game gm
-                      ON rb.gm_code = gm.gm_code
-        WHERE rcrbrd_status = '진행중'
-          AND rcrbrd_edate >= now()
+        LEFT JOIN tb_game gm ON rb.gm_code = gm.gm_code
+        WHERE rcrbrd_status = '진행중' AND rcrbrd_edate >= now()
         ORDER BY ${order} DESC
         Limit 9
     </select>
@@ -70,66 +84,91 @@
         WHERE gm_name = #{gm_name}
     </select>
 
-    <!-- 게시판 번호에 맞는 상세 정보 가져오기 -->
-    <select id="detail" parameterType="int" resultType="com.cafe24.nonchrono.dto.RecruitDTO">
-        SELECT rcrbrd_num,
-               mem_id,
-               rcrbrd_subject,
-               rcrbrd_content,
-               rcrbrd_pw,
-               rcrbrd_views,
-               rcrbrd_date,
-               rcrbrd_edate,
-               rcrbrd_ip,
-               gm_code,
-               rcrbrd_status,
-               rcrbrd_adr,
-               rcrbrd_max
-        FROM tb_rcrboard
+    <resultMap id="rcrBoardMap" type="com.cafe24.nonchrono.dto.RecruitDTO">
+        <id column="rcrbrd_num" property="rcrbrd_num"/>
+        <result column="mem_id" property="mem_id"/>
+        <result column="rcrbrd_subject" property="rcrbrd_subject"/>
+        <result column="rcrbrd_content" property="rcrbrd_content"/>
+        <result column="rcrbrd_pw" property="rcrbrd_pw"/>
+        <result column="rcrbrd_views" property="rcrbrd_views"/>
+        <result column="rcrbrd_date" property="rcrbrd_date"/>
+        <result column="rcrbrd_edate" property="rcrbrd_edate"/>
+        <result column="rcrbrd_ip" property="rcrbrd_ip"/>
+        <result column="gm_code" property="gm_code"/>
+        <result column="rcrbrd_status" property="rcrbrd_status"/>
+        <result column="rcrbrd_adr" property="rcrbrd_adr"/>
+        <result column="rcrbrd_max" property="rcrbrd_max"/>
+    </resultMap>
+
+    <resultMap id="gameMap" type="com.cafe24.nonchrono.dto.GameDTO">
+        <id column="gm_code" property="gm_code"/>
+        <result column="gm_name" property="gm_name"/>
+        <result column="gm_price" property="gm_price"/>
+        <result column="gm_level" property="gm_level"/>
+        <result column="gm_category" property="gm_category"/>
+        <result column="gm_img" property="gm_img"/>
+    </resultMap>
+
+    <resultMap id="memberMap" type="com.cafe24.nonchrono.dto.MemDTO">
+        <id column="mem_id" property="mem_id"/>
+        <result column="mem_pw" property="mem_pw"/>
+        <result column="mem_nick" property="mem_nick"/>
+        <result column="mem_name" property="mem_name"/>
+        <result column="mem_zip" property="mem_zip"/>
+        <result column="mem_adr1" property="mem_adr1"/>
+        <result column="mem_adr2" property="mem_adr2"/>
+        <result column="mem_phone" property="mem_phone"/>
+        <result column="mem_birth" property="mem_birth"/>
+        <result column="mem_grade" property="mem_grade"/>
+        <result column="upoint" property="upoint"/>
+        <result column="apoint" property="apoint"/>
+        <result column="mem_receive" property="mem_receive"/>
+        <result column="good" property="good"/>
+        <result column="buyer_bad" property="buyer_bad"/>
+        <result column="mem_pic" property="mem_pic"/>
+    </resultMap>
+
+    <resultMap id="detailMap" type="java.util.HashMap">
+        <result column="detailCnt" property="cnt"/>
+        <association property="rcrBoard" resultMap="rcrBoardMap"/>
+        <association property="game" resultMap="gameMap"/>
+        <association property="member" resultMap="memberMap"/>
+    </resultMap>
+
+    <!-- 게시판 번호에 맞는 상세 정보 가져오기 (모집 상세, 게임, 모집장 상세 정보) -->
+    <select id="detail" parameterType="int" resultMap="detailMap">
+        SELECT rb.rcrbrd_num, rb.mem_id, rb.rcrbrd_subject, rb.rcrbrd_content, rb.rcrbrd_pw, rb.rcrbrd_views, rb.rcrbrd_date, rb.rcrbrd_edate, rb.rcrbrd_ip, rb.gm_code, rb.rcrbrd_status, rb.rcrbrd_adr, rb.rcrbrd_max,
+               gm.gm_name, gm.gm_price, gm.gm_level, gm.gm_category, gm.gm_img,
+               mm.mem_pw, mm.mem_nick, mm.mem_name, mm.mem_zip, mm.mem_adr1, mm.mem_adr2, mm.mem_phone, mm.mem_birth, mm.mem_grade, mm.upoint, mm.apoint, mm.mem_receive, mm.good, mm.buyer_bad, mm.mem_pic,
+               (SELECT COUNT(*)
+                FROM tb_rcrboard
+                group by mem_id
+                having mem_id = rb.mem_id) as detailCnt
+        FROM tb_rcrboard rb
+        INNER JOIN tb_game gm ON rb.gm_code = gm.gm_code
+        INNER JOIN tb_mem mm ON rb.mem_id = mm.mem_id
         WHERE rcrbrd_num = #{rcrbrd_num}
     </select>
 
-    <!-- 게시판의 품목(게임)의 상세 정보 가져오기 -->
-    <select id="gameDetail" parameterType="int" resultType="com.cafe24.nonchrono.dto.GameDTO">
-        SELECT gm.gm_code, gm.gm_name, gm.gm_price, gm.gm_level, gm.gm_category, gm.gm_img
-        FROM tb_rcrboard as rb
-                 join tb_game as gm
-                      on rb.gm_code = gm.gm_code
-        WHERE rcrbrd_num = #{rcrbrd_num}
-    </select>
+    <!-- 게시판 번호에 맞는 좌석 정보 가져오기 (좌석, 회원, 역할) / 역할이 지정되지 않는 이상 검색되지 않으므로 폐기 -->
+    <!--<select id="seatDetail" parameterType="int" resultType="java.util.LinkedHashMap">
+        SELECT rs.rl_name, rs.rs_seat,
+        CASE WHEN ri.ri_seat = rs.rs_seat THEN ri.mem_id ELSE '' END AS mem_id,
+        CASE WHEN ri.ri_seat = rs.rs_seat THEN mm.mem_nick ELSE '' END AS mem_nick,
+        CASE WHEN ri.ri_seat = rs.rs_seat THEN mm.mem_pic ELSE '' END AS mem_pic
+        FROM tb_roleseat rs
+        LEFT JOIN tb_recruitinfo ri ON ri.rcrbrd_num = rs.rcrbrd_num AND ri.ri_seat = rs.rs_seat
+        LEFT JOIN tb_mem mm ON ri.mem_id = mm.mem_id
+        WHERE rs.rcrbrd_num = #{rcrbrd_num}
+    </select>-->
 
-    <!-- 게시판의 모집장의 상세 정보 가져오기 -->
-    <select id="memDetail" resultType="com.cafe24.nonchrono.dto.MemDTO">
-        SELECT rb.mem_id,
-               mm.mem_pw,
-               mm.mem_nick,
-               mm.mem_name,
-               mm.mem_zip,
-               mm.mem_adr1,
-               mm.mem_adr2,
-               mm.mem_phone,
-               mm.mem_birth,
-               mm.mem_grade,
-               mm.upoint,
-               mm.apoint,
-               mm.mem_receive,
-               mm.good,
-               mm.buyer_bad,
-               mm.mem_pic
-        from tb_mem as mm
-                 join tb_rcrboard as rb
-                      on rb.mem_id = mm.mem_id
-        WHERE rb.rcrbrd_num = #{rcrbrd_num}
-    </select>
-
-    <!-- 게시판의 모집장의 모집 횟수 카운트 -->
-    <select id="recruitCount" parameterType="int" resultType="int">
-        SELECT COUNT(*)
-        FROM tb_rcrboard
-        group by mem_id
-        having mem_id = (select mem_id
-                         from tb_rcrboard
-                         where rcrbrd_num = #{rcrbrd_num})
+    <!-- 좌석 번호에 맞는 좌석 정보 가져오기 (아이디, 닉네임, 프로필) -->
+    <select id="seatDetail" parameterType="int" resultType="java.util.LinkedHashMap">
+        SELECT ri.ri_seat, ri.mem_id, mm.mem_nick, mm.mem_pic
+        FROM tb_recruitinfo ri
+        INNER JOIN tb_mem mm on ri.mem_id = mm.mem_id
+        WHERE ri.rcrbrd_num = #{rcrbrd_num}
+        ORDER BY ri_seat
     </select>
 
     <!-- 멤버 아이디로 닉네임 가져오기 -->
@@ -147,12 +186,21 @@
                 #{rcrbrd_ip}, #{gm_code}, #{rcrbrd_status}, #{rcrbrd_adr}, #{rcrbrd_max})
     </insert>
 
+    <!-- 참가 신청 전 체크 과정 -->
+    <select id="attendCheck" parameterType="java.util.Map" resultType="Integer">
+        SELECT ri_seat
+        FROM tb_recruitinfo
+        WHERE rcrbrd_num = #{rcrbrd_num}
+          AND mem_id = #{mem_id}
+    </select>
+
     <!-- 모집 상세에서 참가 신청 -->
     <insert id="attend" parameterType="com.cafe24.nonchrono.dto.RecruitInfoDTO">
         INSERT INTO tb_recruitinfo (mem_id, rcrbrd_num, ri_seat)
         VALUES (#{mem_id}, #{rcrbrd_num}, #{ri_seat})
     </insert>
 
+    <!-- 역할 등록 -->
     <insert id="roleInsert" parameterType="com.cafe24.nonchrono.dto.RoleDTO">
         INSERT INTO tb_role (rl_name, rcrbrd_num)
         VALUES (#{rl_name}, #{rcrbrd_num})
@@ -220,44 +268,6 @@
           AND rs_seat = #{rs_seat}
     </select>
 
-    <!--<select id="roleSeatCount" parameterType="com.cafe24.nonchrono.dto.RoleSeatDTO" resultType="int">
-        SELECT count(rs_seat)
-        FROM tb_roleseat
-        WHERE rcrbrd_num = #{rcrbrd_num}
-    </select>-->
-
-    <!-- 참여한 멤버 리스트 불러오기 -->
-    <select id="attendMembers" parameterType="int" resultType="com.cafe24.nonchrono.dto.RecruitInfoDTO">
-        SELECT mem_id, ri_seat, ri_num
-        FROM tb_recruitinfo
-        WHERE rcrbrd_num = #{rcrbrd_num}
-    </select>
-
-    <!-- 로그인한 사용자가 해당 게시물에서 참가 버튼을 눌렀는지 여부 -->
-    <select id="attendCount" parameterType="com.cafe24.nonchrono.dto.RecruitInfoDTO" resultType="int">
-        SELECT count(*)
-        FROM tb_recruitinfo
-        WHERE rcrbrd_num = #{rcrbrd_num}
-          AND mem_id in (#{mem_id})
-    </select>
-
-    <!-- 자리당 아이디 조회 -->
-    <select id="memName" parameterType="int" resultType="com.cafe24.nonchrono.dto.RecruitInfoDTO">
-        SELECT mem_id, ri_seat
-        FROM tb_recruitinfo
-        WHERE rcrbrd_num = #{rcrbrd_num}
-    </select>
-
-    <!-- 자리당 닉네임 조회 -->
-    <select id="memNick" parameterType="com.cafe24.nonchrono.dto.RecruitInfoDTO" resultType="String">
-        SELECT mm.mem_nick
-        FROM tb_recruitinfo as ri
-                 JOIN tb_mem as mm
-                      ON ri.mem_id = mm.mem_id
-        WHERE ri.rcrbrd_num = #{rcrbrd_num}
-          AND ri.ri_seat = #{ri_seat}
-    </select>
-
     <!-- 해당 게시물에 모집 최대 인원 조회 -->
     <select id="rcrbrdMax" parameterType="int" resultType="int">
         SELECT rcrbrd_max
@@ -265,22 +275,12 @@
         WHERE rcrbrd_num = #{rcrbrd}
     </select>
 
-    <!-- 자리당 이미지 조회 -->
-    <select id="memPic" parameterType="com.cafe24.nonchrono.dto.RecruitInfoDTO" resultType="String">
-        SELECT mm.mem_pic
-        FROM tb_recruitinfo as ri
-                 JOIN tb_mem as mm
-                      ON ri.mem_id = mm.mem_id
-        WHERE ri.rcrbrd_num = #{rcrbrd_num}
-          AND ri.ri_seat = #{ri_seat}
-    </select>
-
     <!-- 이번달 모집왕 -->
     <select id="rcrKing" resultType="java.util.Map">
         SELECT mm.mem_nick, mm.mem_id, count(*) as cnt
-        FROM tb_mem as mm
-                 JOIN tb_rcrboard as rb
-                      on mm.mem_id = rb.mem_id
+        FROM tb_mem as mm JOIN tb_rcrboard as rb
+                               on mm.mem_id = rb.mem_id
+        where DATE_FORMAT(rb.rcrbrd_date, '%Y-%m') = DATE_FORMAT(now(), '%Y-%m')
         group by rb.mem_id
         order by count(*) DESC
         Limit 5
@@ -376,20 +376,6 @@
         VALUES (#{sc_word}, now(), '모집')
     </insert>
 
-    <select id="attendCheck" parameterType="java.util.Map" resultType="int">
-        SELECT ri_seat
-        FROM tb_recruitinfo
-        WHERE rcrbrd_num = #{rcrbrd_num}
-          AND mem_id = #{mem_id}
-    </select>
-
-    <select id="memSeat" parameterType="com.cafe24.nonchrono.dto.RecruitInfoDTO" resultType="String">
-        SELECT mem_id
-        FROM tb_recruitinfo
-        WHERE rcrbrd_num = #{rcrbrd_num}
-          AND ri_seat = #{ri_seat}
-    </select>
-
     <select id="heartCheck" parameterType="com.cafe24.nonchrono.dto.RatingDTO" resultType="int">
         SELECT count(*)
         FROM tb_rating
@@ -433,35 +419,6 @@
         WHERE mem_id = #{mem_id}
     </update>
 
-    <!-- 키워드가 있을시 목록 출력 -->
-    <select id="list2" parameterType="java.util.Map" resultType="com.cafe24.nonchrono.dto.RecruitDTO">
-        SELECT rcrbrd_num,
-               mem_id,
-               rcrbrd_subject,
-               rcrbrd_content,
-               rcrbrd_pw,
-               rcrbrd_views,
-               rcrbrd_date,
-               rcrbrd_edate,
-               rcrbrd_ip,
-               rb.gm_code,
-               rcrbrd_status,
-               rcrbrd_adr,
-               rcrbrd_max,
-               (SELECT count(*) FROM tb_comment where rcrbrd_num = rb.rcrbrd_num) as com_count,
-               (SELECT count(mem_id)
-                FROM tb_recruitinfo
-                where rcrbrd_num = rb.rcrbrd_num)                                 as cnt
-        FROM tb_rcrboard rb
-                 JOIN tb_game gm
-                      ON rb.gm_code = gm.gm_code
-        WHERE rcrbrd_status = '진행중'
-          AND rcrbrd_edate >= now()
-          AND gm.gm_name LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY ${order} DESC
-        Limit 9
-    </select>
-
     <!-- 키워드가 있을시 정렬하여 목록 보기 -->
     <select id="listAjax2" resultType="com.cafe24.nonchrono.dto.MoreDTO">
         SELECT gm.gm_name,
@@ -473,7 +430,7 @@
                (SELECT count(*) FROM tb_comment where rcrbrd_num = rb.rcrbrd_num) as com_count,
                (SELECT count(mem_id)
                 FROM tb_recruitinfo
-                WHERE rcrbrd_num = rb.rcrbrd_num)                                 as cnt
+                WHERE rcrbrd_num = rb.rcrbrd_num)                                 as count
         FROM tb_rcrboard rb
                  join tb_game gm
                       ON rb.gm_code = gm.gm_code

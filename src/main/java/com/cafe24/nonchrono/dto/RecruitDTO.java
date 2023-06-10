@@ -23,4 +23,7 @@ public class RecruitDTO {
     private String rcrbrd_adr; // 모집 지역
     private int rcrbrd_max; // 모집 인원
     private int com_count; // 댓글 갯수
+    private String gm_name; // 게임명
+    private int cnt; // 참여자 수
+
 }

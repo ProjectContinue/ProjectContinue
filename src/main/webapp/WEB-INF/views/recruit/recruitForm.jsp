@@ -229,48 +229,11 @@
 
         // 모달창의 검색창에 검색어 추출
         let params = $("#gs_keyword").val();
-        // let params = $("#gs_keyword").serialize();
-
-        // alert(params);
-
-        // ajax로 searchProc 실행
-        // $.post("searchProc", params, responseProc);
 
         responseProc(params);
     }); // keyup() end
 
     function responseProc(data) {
-        // alert(data)
-
-        /*if (data.length > 0) {
-            let result = data.split("^^^"); // | 기호를 기준으로 문자열 분리
-            // alert(result[0]); // 검색 결과 수
-            // alert(result[1]); // 검색 결과 내용
-
-            let title = result[1].split(","); // , 기호를 기준으로 문자열 분리
-            let code = result[2].split(",");
-
-            // console.log("code : " + code);
-
-            let str = ""; // 검색 결과를 저장할 변수
-            $.each(title, function (index, key) {
-                let codenum = code[index];
-                //alert(codenum);
-
-                str += "<hr>";
-                str += "<img src='/images/thumb/" + codenum + "/thumb.jpg' style='width: 10%'>&nbsp;"
-                str += "<span id='title_key' style='cursor: pointer' onclick='panelClick(\"" + codenum + "\")'>" + key + "</span>";
-                str += "<hr>";
-            }); // each() end
-
-            $("#panel").html(str);
-            // console.log("패널에 출력되는 html : " + str);
-            $("#panel").show();
-
-        } else {
-            $("#panel").hide();
-        } // if end*/
-
         if (data.length > 0) {
             let str = "";
             $.each(gameName, function (index, key) {
